@@ -1,4 +1,4 @@
-# maximal-k-partite-cliques
+# Maximal k-Partite Cliques Implementation
 A C++ implementation of maximal k-partite clique algorithm outlined in the paper:  doi: 10.3390/a12010023
 <br /><br /><br />
 Instructions: <br />
