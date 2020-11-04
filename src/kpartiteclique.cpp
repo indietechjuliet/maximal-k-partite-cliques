@@ -120,25 +120,28 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 		return;
 	}
 	int pivot = choosePivot(P, X, matrix);
-	cout<<"Pivot is: "<<pivot<<endl;
-	cout<<"R is currently: ";
-	for(int g = 0; g < R.size(); g++)
-		cout<<R[g]<<"  ";
-
-	cout<<endl;
-	for(int v = 0; v < matrix[pivot].size(); v++)
+	if (pivot != -1)
 	{
-		vector <int>::iterator it;
-		it = find(P.begin(), P.end(), v);
-		if(it != P.end() && matrix[pivot][v]  == 0)
-		{
-			R.push_back(v);
+		cout<<"Pivot is: "<<pivot<<endl;
+		cout<<"R is currently: ";
+		for(int g = 0; g < R.size(); g++)
+			cout<<R[g]<<"  ";
 
-			vector <int> PnNv = intersection(P, matrix[v]);
-			vector <int> XnNv = intersection(X, matrix[v]);
-			enumerate(matrix, R, PnNv, XnNv, partiteSets);
-			P.erase(it);
-			X.push_back(v);
+		cout<<endl;
+		for(int v = 0; v < matrix[pivot].size(); v++)
+		{
+			vector <int>::iterator it;
+			it = find(P.begin(), P.end(), v);
+			if(it != P.end() && matrix[pivot][v]  == 0)
+			{
+				R.push_back(v);
+
+				vector <int> PnNv = intersection(P, matrix[v]);
+				vector <int> XnNv = intersection(X, matrix[v]);
+				enumerate(matrix, R, PnNv, XnNv, partiteSets);
+				P.erase(it);
+				X.push_back(v);
+			}
 		}
 	}
 
@@ -175,7 +178,7 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 	}
 
 	int maxcount = 0;
-	int pivot;
+	int pivot = -1;
 	for(int u = 0; u < PuX.size(); u++)
 	{
 		vector <int> Nu = matrix[PuX[u]];
@@ -253,8 +256,11 @@ void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteS
 			{
 				for(int b = partiteSets[i]; b < cap; b++)
 				{
-					matrix[a][b] = 1;
-					matrix[b][a] = 1;
+					if(a != b)
+					{
+						matrix[a][b] = 1;
+						matrix[b][a] = 1;
+					}
 				}
 			}	
 
@@ -265,8 +271,12 @@ void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteS
 			{
 				for(int b = partiteSets[i]; b < matrix[0].size(); b++)
 				{
-					matrix[a][b] = 1;
-					matrix[b][a] =1;
+					if(a != b)
+
+					{
+						matrix[a][b] = 1;
+						matrix[b][a] =1;
+					}
 				}
 			}
 
