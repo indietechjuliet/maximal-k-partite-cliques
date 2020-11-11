@@ -112,10 +112,18 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 {
 	cout<<"here"<<endl;
 	cout<<"P: "<<P.size()<<"   X:"<<X.size()<<endl;
+	for(int i = 0; i < P.size(); i++)
+		cout<<P[i]<<"  ";
+	cout<<endl<<endl;
 	if(P.size() == 0 && X.size() == 0)
 	{
 		if(coverPartition(R, partiteSets))
+		{
 			cout<<"Maximal Partite CLique: "<<endl;
+			for(int s = 0; s < R.size(); s++)
+				cout<<R[s]<<" ";
+		}
+		cout<<endl;
 		cout<<"returning"<<endl;
 		return;
 	}
@@ -169,6 +177,7 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 
 	PuX = P;
 
+	int pivot = -1;
 	vector<int>::iterator it;
 	for(int i = 0; i < X.size(); i++)
 	{
@@ -176,9 +185,14 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 		if(it == PuX.end())
 			PuX.push_back(X[i]);
 	}
-
+	
+	cout<<"PUX size:"<<PuX.size();
+	if(PuX.size() == 1)
+	{
+		pivot  = PuX[0];
+		return pivot;
+	}
 	int maxcount = 0;
-	int pivot = -1;
 	for(int u = 0; u < PuX.size(); u++)
 	{
 		vector <int> Nu = matrix[PuX[u]];
@@ -186,7 +200,7 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 		for(int n = 0; n < Nu.size(); n++)
 		{
 			it = find(P.begin(), P.end(), n);
-			if(Nu[n] == 1 && it != P.end())
+			if(Nu[n] != 0 && it != P.end())
 				count++;
 		}
 		if(count > maxcount)
@@ -258,8 +272,8 @@ void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteS
 				{
 					if(a != b)
 					{
-						matrix[a][b] = 1;
-						matrix[b][a] = 1;
+						matrix[a][b] = 2;
+						matrix[b][a] = 2;
 					}
 				}
 			}	
@@ -274,8 +288,8 @@ void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteS
 					if(a != b)
 
 					{
-						matrix[a][b] = 1;
-						matrix[b][a] =1;
+						matrix[a][b] = 2;
+						matrix[b][a] =2;
 					}
 				}
 			}
