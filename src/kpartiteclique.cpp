@@ -114,6 +114,7 @@ int main(int argc, char* argv[])
 	vector < int> X;
 	enumerate(matrix, R, P, X, partiteSets, fout);
 	cout<<"Maximal Cliques output to "<<outname<<endl;
+	fout<<"Maximal Cliques:\n";
 	fout.close();
 }
 
@@ -128,7 +129,7 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 	{
 		if(coverPartition(R, partiteSets))
 		{
-			fout<<"Maximal Partite Clique: "<<endl;
+			//fout<<"Maximal Partite Clique: "<<endl;
 			for(int s = 0; s < R.size(); s++)
 				fout<<R[s]<<" ";
 			fout<<endl;
