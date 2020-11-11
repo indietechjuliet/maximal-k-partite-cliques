@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 	int partites = stoi(argv[2]);
 
-	cout << "PARTITE:" <<partites<<endl;
+	//cout << "PARTITE:" <<partites<<endl;
 	int vertices = 0;
 	int edges = 0;
 
@@ -53,10 +53,10 @@ int main(int argc, char* argv[])
 		partiteSets.push_back(min);
 
 	}
-	cout<<partiteSets.size()<<endl;
-	for(int i = 0; i < partiteSets.size(); i++)
-		cout<<partiteSets[i]<<" ";
-	cout<<endl;
+	//cout<<partiteSets.size()<<endl;
+	//for(int i = 0; i < partiteSets.size(); i++)
+	//	cout<<partiteSets[i]<<" ";
+	//cout<<endl;
 	ifstream fin;
 	fin.open(argv[1]);
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			cout<<line<<endl;
+			//cout<<line<<endl;
 			int node1, node2;
 			ss>>node1>>node2;
 
@@ -95,13 +95,13 @@ int main(int argc, char* argv[])
 
 	}
 
-	printMatrix(matrix);
+	//printMatrix(matrix);
 
 	vector <int> clique = {2, 5, 7};
 
 	addIntrapartiteEdges(matrix,  partiteSets);
-	cout<<endl<<endl;
-	printMatrix(matrix);
+	//cout<<endl<<endl;
+	//printMatrix(matrix);
 	vector <int> R;
 	vector < int> X;
 	enumerate(matrix, R, P, X, partiteSets);
@@ -110,32 +110,32 @@ int main(int argc, char* argv[])
 
 void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets )
 {
-	cout<<"here"<<endl;
-	cout<<"P: "<<P.size()<<"   X:"<<X.size()<<endl;
-	for(int i = 0; i < P.size(); i++)
-		cout<<P[i]<<"  ";
-	cout<<endl<<endl;
+	//cout<<"here"<<endl;
+	//cout<<"P: "<<P.size()<<"   X:"<<X.size()<<endl;
+	//for(int i = 0; i < P.size(); i++)
+	//	cout<<P[i]<<"  ";
+	//cout<<endl<<endl;
 	if(P.size() == 0 && X.size() == 0)
 	{
 		if(coverPartition(R, partiteSets))
 		{
-			cout<<"Maximal Partite CLique: "<<endl;
+			cout<<"Maximal Partite Clique: "<<endl;
 			for(int s = 0; s < R.size(); s++)
 				cout<<R[s]<<" ";
+			cout<<endl;
 		}
-		cout<<endl;
-		cout<<"returning"<<endl;
+		//cout<<"returning"<<endl;
 		return;
 	}
 	int pivot = choosePivot(P, X, matrix);
 	if (pivot != -1)
 	{
-		cout<<"Pivot is: "<<pivot<<endl;
-		cout<<"R is currently: ";
-		for(int g = 0; g < R.size(); g++)
-			cout<<R[g]<<"  ";
+		//cout<<"Pivot is: "<<pivot<<endl;
+		//cout<<"R is currently: ";
+		//for(int g = 0; g < R.size(); g++)
+		//	cout<<R[g]<<"  ";
 
-		cout<<endl;
+		//cout<<endl;
 		for(int v = 0; v < matrix[pivot].size(); v++)
 		{
 			vector <int>::iterator it;
@@ -164,7 +164,7 @@ vector <int> intersection( vector <int> setA, vector <int> matrixRow)
 	for(int i = 0; i < matrixRow.size(); i++)
 	{
 		it = find(setA.begin(), setA.end(), i);
-		if(it != setA.end() && matrixRow[i] ==1)
+		if(it != setA.end() && matrixRow[i] == 1)
 		{
 			intersect.push_back(i);
 		}
@@ -186,7 +186,7 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 			PuX.push_back(X[i]);
 	}
 	
-	cout<<"PUX size:"<<PuX.size();
+	//cout<<"PUX size:"<<PuX.size();
 	if(PuX.size() == 1)
 	{
 		pivot  = PuX[0];
@@ -217,7 +217,7 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 
 int coverPartition(vector <int> R, vector <int> partiteSets)
 {
-	cout<<"IN COVER"<<endl;
+	//cout<<"IN COVER"<<endl;
 	vector <int> found;
 	found.resize(partiteSets.size(), 0);
 	for(int i = 0; i < partiteSets.size(); i++)
