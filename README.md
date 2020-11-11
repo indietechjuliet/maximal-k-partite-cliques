@@ -21,3 +21,9 @@ Let's step through what each of the command line arguments mean in the example a
 **Another Note: each partition is a disjoint set, meaning there are no edges between nodes in the partitions** <br />
 
 The output of the program is a list of maximal k-partite cliques of the graph provided
+
+
+<br /> <br /> <br />
+Contact me:
+Rachel Offutt
+roffutt@vols.utk.edu
