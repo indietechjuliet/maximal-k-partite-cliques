@@ -14,7 +14,7 @@ int findIndex(string target, vector < string> &nodes);
 void printMatrix( vector < vector <int> > &matrix);
 vector <int> returnFirstClique(vector <vector <int> > matrix, vector <int> partiteSets);
 void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteSets);
-void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets );
+void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets, ofstream& fout );
 int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix);
 vector <int> intersection( vector <int> setA, vector <int> matrixRow);
 int coverPartition(vector <int> R, vector <int> partiteSets);
@@ -61,7 +61,15 @@ int main(int argc, char* argv[])
 	fin.open(argv[1]);
 
 	string line;
+	string outname;
 	vector <int> P;
+	
+	outname = argv[1];
+	outname =  outname.substr(0, outname.size()-4);
+	outname += "_maximalcliques.txt";
+
+	ofstream fout;
+	fout.open(outname);
 	while(getline(fin, line)){
 		stringstream ss(line);
 		if(vertices == 0)
@@ -104,11 +112,12 @@ int main(int argc, char* argv[])
 	//printMatrix(matrix);
 	vector <int> R;
 	vector < int> X;
-	enumerate(matrix, R, P, X, partiteSets);
-
+	enumerate(matrix, R, P, X, partiteSets, fout);
+	cout<<"Maximal Cliques output to "<<outname<<endl;
+	fout.close();
 }
 
-void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets )
+void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets, ofstream& fout )
 {
 	//cout<<"here"<<endl;
 	//cout<<"P: "<<P.size()<<"   X:"<<X.size()<<endl;
@@ -119,10 +128,10 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 	{
 		if(coverPartition(R, partiteSets))
 		{
-			cout<<"Maximal Partite Clique: "<<endl;
+			fout<<"Maximal Partite Clique: "<<endl;
 			for(int s = 0; s < R.size(); s++)
-				cout<<R[s]<<" ";
-			cout<<endl;
+				fout<<R[s]<<" ";
+			fout<<endl;
 		}
 		//cout<<"returning"<<endl;
 		return;
@@ -146,7 +155,7 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 
 				vector <int> PnNv = intersection(P, matrix[v]);
 				vector <int> XnNv = intersection(X, matrix[v]);
-				enumerate(matrix, R, PnNv, XnNv, partiteSets);
+				enumerate(matrix, R, PnNv, XnNv, partiteSets, fout);
 				P.erase(it);
 				X.push_back(v);
 			}
