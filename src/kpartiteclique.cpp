@@ -9,7 +9,7 @@ using namespace std;
 
 
 
-
+bool allConnected(vector <int> R, vector <vector <int > > matrix);
 int findIndex(string target, vector < string> &nodes);
 void printMatrix( vector < vector <int> > &matrix);
 vector <int> returnFirstClique(vector <vector <int> > matrix, vector <int> partiteSets);
@@ -105,16 +105,15 @@ int main(int argc, char* argv[])
 
 	//printMatrix(matrix);
 
-	vector <int> clique = {2, 5, 7};
 
 	addIntrapartiteEdges(matrix,  partiteSets);
 	//cout<<endl<<endl;
 	//printMatrix(matrix);
 	vector <int> R;
 	vector < int> X;
+	fout<<"Maximal Cliques:"<<endl;
 	enumerate(matrix, R, P, X, partiteSets, fout);
 	cout<<"Maximal Cliques output to "<<outname<<endl;
-	fout<<"Maximal Cliques:\n";
 	fout.close();
 }
 
@@ -127,7 +126,7 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 	//cout<<endl<<endl;
 	if(P.size() == 0 && X.size() == 0)
 	{
-		if(coverPartition(R, partiteSets))
+		if(coverPartition(R, partiteSets) && allConnected(R, matrix))
 		{
 			//fout<<"Maximal Partite Clique: "<<endl;
 			for(int s = 0; s < R.size(); s++)
@@ -165,6 +164,18 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 
 }
 
+bool allConnected(vector <int> R, vector <vector <int > > matrix)
+{
+	for(int i = 0; i < R.size(); i++)
+	{
+		for(int j = i+1; j < R.size(); j++)
+		{
+			if(matrix[R[i]][R[j]] == 0)
+				return false;
+		}
+	}
+	return true;
+}
 
 vector <int> intersection( vector <int> setA, vector <int> matrixRow)
 {
