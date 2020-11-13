@@ -9,23 +9,14 @@ using namespace std;
 
 
 
-bool allConnected(vector <int> R, vector <vector <int > > matrix);
 int findIndex(string target, vector < string> &nodes);
 void printMatrix( vector < vector <int> > &matrix);
 vector <int> returnFirstClique(vector <vector <int> > matrix, vector <int> partiteSets);
 void addIntrapartiteEdges(vector <vector < int> > &matrix, vector <int> partiteSets);
 void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, vector <int> X, vector <int> partiteSets, ofstream& fout );
-int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix);
+vector <int> choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix);
 vector <int> intersection( vector <int> setA, vector <int> matrixRow);
 int coverPartition(vector <int> R, vector <int> partiteSets);
-
-
-
-
-
-
-
-
 
 
 int main(int argc, char* argv[])
@@ -63,7 +54,7 @@ int main(int argc, char* argv[])
 	string line;
 	string outname;
 	vector <int> P;
-	
+
 	outname = argv[1];
 	outname =  outname.substr(0, outname.size()-4);
 	outname += "_maximalcliques.txt";
@@ -126,9 +117,10 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 	//cout<<endl<<endl;
 	if(P.size() == 0 && X.size() == 0)
 	{
-		if(coverPartition(R, partiteSets) && allConnected(R, matrix))
+		if(coverPartition(R, partiteSets))
 		{
-			//fout<<"Maximal Partite Clique: "<<endl;
+			//vector <int> Rconnected = allConnected(R, matrix);
+			//fout<<"Maximal Partite Clique: "<<endl;a
 			for(int s = 0; s < R.size(); s++)
 				fout<<R[s]<<" ";
 			fout<<endl;
@@ -136,46 +128,33 @@ void enumerate(vector <vector <int > > matrix, vector <int> R, vector <int> P, v
 		//cout<<"returning"<<endl;
 		return;
 	}
-	int pivot = choosePivot(P, X, matrix);
-	if (pivot != -1)
+	vector <int>  pivot = choosePivot(P, X, matrix);
+	if (pivot.size() > 0)
 	{
-		//cout<<"Pivot is: "<<pivot<<endl;
-		//cout<<"R is currently: ";
-		//for(int g = 0; g < R.size(); g++)
-		//	cout<<R[g]<<"  ";
-
-		//cout<<endl;
-		for(int v = 0; v < matrix[pivot].size(); v++)
+		for(int f =0; f < pivot.size(); f++)
 		{
-			vector <int>::iterator it;
-			it = find(P.begin(), P.end(), v);
-			if(it != P.end() && matrix[pivot][v]  == 0)
+			for(int v = 0; v < matrix[pivot[f]].size(); v++)
 			{
-				R.push_back(v);
+				vector <int>::iterator it;
+				it = find(P.begin(), P.end(), v);
+				if(it != P.end() && matrix[pivot[f]][v]  == 0)
+				{
 
-				vector <int> PnNv = intersection(P, matrix[v]);
-				vector <int> XnNv = intersection(X, matrix[v]);
-				enumerate(matrix, R, PnNv, XnNv, partiteSets, fout);
-				P.erase(it);
-				X.push_back(v);
+
+					vector <int> PnNv = intersection(P, matrix[v]);
+					vector <int> XnNv = intersection(X, matrix[v]);
+					R.push_back(v);
+					enumerate(matrix, R, PnNv, XnNv, partiteSets, fout);
+					P.erase(it);
+					X.push_back(v);
+					R.pop_back();
+				}
 			}
 		}
 	}
 
 }
 
-bool allConnected(vector <int> R, vector <vector <int > > matrix)
-{
-	for(int i = 0; i < R.size(); i++)
-	{
-		for(int j = i+1; j < R.size(); j++)
-		{
-			if(matrix[R[i]][R[j]] == 0)
-				return false;
-		}
-	}
-	return true;
-}
 
 vector <int> intersection( vector <int> setA, vector <int> matrixRow)
 {
@@ -192,13 +171,14 @@ vector <int> intersection( vector <int> setA, vector <int> matrixRow)
 	}
 	return intersect;
 }
-int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
+vector <int> choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 {
 	vector <int> PuX;
 
 	PuX = P;
 
-	int pivot = -1;
+	vector <int> pivot;
+	vector <pair < int, int> > temp;
 	vector<int>::iterator it;
 	for(int i = 0; i < X.size(); i++)
 	{
@@ -206,11 +186,11 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 		if(it == PuX.end())
 			PuX.push_back(X[i]);
 	}
-	
+
 	//cout<<"PUX size:"<<PuX.size();
 	if(PuX.size() == 1)
 	{
-		pivot  = PuX[0];
+		pivot.push_back(PuX[0]);
 		return pivot;
 	}
 	int maxcount = 0;
@@ -224,13 +204,26 @@ int choosePivot(vector <int> P , vector <int> X, vector < vector <int >> matrix)
 			if(Nu[n] != 0 && it != P.end())
 				count++;
 		}
-		if(count > maxcount)
+
+		temp.push_back(make_pair(PuX[u], count));
+		if(count >= maxcount)
 		{
 			maxcount = count;
-			pivot = PuX[u];
+			//pivot.push_back(PuX[u]);
 		}
 
 	}
+
+	for(int i = 0; i < temp.size(); i++)
+	{
+		if(temp[i].second == maxcount)
+		{
+			pivot.push_back(temp[i].first);
+			//cout<<"PIV: "<<temp[i].first<<endl;
+		}
+	}
+
+
 
 	return pivot;
 
@@ -249,6 +242,10 @@ int coverPartition(vector <int> R, vector <int> partiteSets)
 			{
 				if (R[node] > partiteSets[i] && R[node] < partiteSets[i+1])
 				{
+					if(found[i] ==1)
+					{
+
+					}
 					found[i] = 1;
 					break;
 				}
