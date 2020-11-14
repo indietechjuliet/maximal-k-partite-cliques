@@ -7,7 +7,7 @@ A C++ implementation of maximal k-partite clique algorithm outlined in the paper
 Instructions: <br />
 compile with the following <br />
 ```
-g++ -std=c++11 -o kpartite kpartiteclique.cpp
+make
 ```
 The folllowing is an example of how to run the program:
 ```
