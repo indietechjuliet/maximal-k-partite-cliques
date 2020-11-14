@@ -1,7 +1,7 @@
 # Maximal k-Partite Cliques Implementation
 A C++ implementation of maximal k-partite clique algorithm outlined in the paper:  doi: 10.3390/a12010023
 
-![image](https://github.com/indietechjuliet/maximal-k-partite-cliques/blob/main/mcme_algorithm.png)
+![image](https://github.com/indietechjuliet/maximal-k-partite-cliques/blob/main/mmce_algorithm.png)
 
 <br /><br /><br />
 Instructions: <br />
