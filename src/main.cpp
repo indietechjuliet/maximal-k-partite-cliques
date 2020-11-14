@@ -1,3 +1,11 @@
+/*Author: Rachel Offutt - University of Tennessee
+*
+*Main function of the program, take in command line arguetns, and reads in the 
+*graph into an adjacency matrix
+*
+*Date Last Modified: Nov. 13, 2020
+*/
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -9,19 +17,33 @@ using namespace std;
 
 #include "inputprep.h"
 #include "enumerate.h"
+#include "helper.h"
 
 int main(int argc, char* argv[])
 {
 
-	int partites = stoi(argv[2]);
+	//Must have input file name, number of partite sets, and at least one partite set group
+	if(argc < 4)
+	{
+		cerr<<"Invalid number of command line arguments. Please see github documentation\n"<<
+		"for correct command line examples.\n";
+		return -1;
+	}
 
-	//cout << "PARTITE:" <<partites<<endl;
+	//Variables to store the number of partities, number of vertices, and edges
+	int partites = stoi(argv[2]);
 	int vertices = 0;
 	int edges = 0;
-
+	
+	//vectors need for the enumerate subroutine
+	vector <int> R;
+	vector < int> X;
+	vector <int> P;
 	vector < vector <int>> matrix;
 	vector <int> partiteSets;
 
+
+	//loop to read in partite set boundaries
 	for (int i = 0; i < partites; i++)
 	{
 		string l = argv[i+3];
@@ -35,29 +57,32 @@ int main(int argc, char* argv[])
 		partiteSets.push_back(min);
 
 	}
-	//cout<<partiteSets.size()<<endl;
-	//for(int i = 0; i < partiteSets.size(); i++)
-	//	cout<<partiteSets[i]<<" ";
-	//cout<<endl;
+
+	//opening input file and error checking
 	ifstream fin;
 	fin.open(argv[1]);
+	if(!fin)
+	{
+		cerr<<"File "<<argv[1]<<" does not  exist. Exiting now.\n";
+		return -1;
+	}
 
+	//creating an output file for maximal cliques and opening the file
 	string line;
 	string outname;
-	vector <int> P;
-
 	outname = argv[1];
 	outname =  outname.substr(0, outname.size()-4);
 	outname += "_maximalcliques.txt";
-
 	ofstream fout;
 	fout.open(outname);
+	
+	//read in vertices and edges
 	while(getline(fin, line)){
 		stringstream ss(line);
 		if(vertices == 0)
 		{
 			ss>>vertices>>edges;
-			//nodes.resize(vertices, "NA");
+			
 			matrix.resize(vertices);
 			P.resize(vertices);
 			for(int i = 0; i < vertices; i++)
@@ -67,16 +92,8 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			//cout<<line<<endl;
 			int node1, node2;
 			ss>>node1>>node2;
-
-			/*
-			   int i1 = findIndex(node1, nodes);
-			   nodes[i1] = node1;
-			   int i2 = findIndex(node2, nodes);
-			   nodes[i2] = node2;
-			   */
 
 			matrix[node1][node2] = 1;
 			matrix[node2][node1] = 1;
@@ -84,17 +101,14 @@ int main(int argc, char* argv[])
 		}
 
 	}
-
-	//printMatrix(matrix);
-
-
+	
+	//add intrapartite edges to adjacency matrix
 	addIntrapartiteEdges(matrix,  partiteSets);
-	//cout<<endl<<endl;
-	//printMatrix(matrix);
-	vector <int> R;
-	vector < int> X;
 	fout<<"Maximal Cliques:"<<endl;
+	
+	//call enumerate subroutine
 	enumerate(matrix, R, P, X, partiteSets, fout);
+	
 	cout<<"Maximal Cliques output to "<<outname<<endl;
 	fout.close();
 }
